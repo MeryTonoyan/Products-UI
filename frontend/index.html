@@ -1,0 +1,1087 @@
+<!doctype html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Products UI • DummyJSON</title>
+    <style>
+        :root{
+            --bg:#0b1220;
+            --panel:#0f1a33;
+            --card:#0f1f3d;
+            --card2:#0c1a35;
+            --text:#eaf0ff;
+            --muted:#a8b3d6;
+            --border:rgba(255,255,255,.10);
+            --shadow: 0 18px 60px rgba(0,0,0,.35);
+            --radius:18px;
+            --accent:#5eead4;
+            --accent2:#60a5fa;
+            --danger:#fb7185;
+            --warning:#fbbf24;
+        }
+
+        *{ box-sizing:border-box; }
+        body{
+            margin:0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background:
+                    radial-gradient(1200px 800px at 15% 10%, rgba(94,234,212,.12), transparent 60%),
+                    radial-gradient(1200px 800px at 85% 10%, rgba(96,165,250,.14), transparent 60%),
+                    radial-gradient(1200px 800px at 50% 90%, rgba(251,113,133,.08), transparent 60%),
+                    var(--bg);
+            color:var(--text);
+            min-height:100vh;
+        }
+        a{ color:inherit; text-decoration:none; }
+        button, input, select{ font:inherit; }
+        .wrap{ max-width:1200px; margin:0 auto; padding:22px; }
+
+        /* Topbar */
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            padding:16px 18px;
+            border:1px solid var(--border);
+            background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+            border-radius: calc(var(--radius) + 4px);
+            box-shadow: var(--shadow);
+            position:sticky;
+            top:14px;
+            z-index:20;
+            backdrop-filter: blur(10px);
+        }
+        .brand{
+            display:flex; align-items:center; gap:12px; min-width: 220px;
+        }
+        .logo{
+            width:44px; height:44px; border-radius:14px;
+            background: linear-gradient(135deg, rgba(94,234,212,.95), rgba(96,165,250,.95));
+            display:grid; place-items:center;
+            color:#04121c;
+            font-weight:900;
+            box-shadow: 0 10px 30px rgba(96,165,250,.18);
+        }
+        .brand h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+        .brand p{ margin:0; color:var(--muted); font-size:12px; margin-top:2px; }
+
+        .controls{
+            display:flex; gap:10px; flex-wrap:wrap;
+            align-items:center;
+            justify-content:flex-end;
+            flex:1;
+        }
+        .field{
+            display:flex; align-items:center; gap:10px;
+            padding:10px 12px;
+            border:1px solid var(--border);
+            background:rgba(0,0,0,.22);
+            border-radius: 14px;
+            min-height:42px;
+        }
+        .field input{
+            border:none; outline:none; background:transparent;
+            color:var(--text);
+            min-width:240px;
+        }
+        .field input::placeholder{ color:rgba(168,179,214,.7); }
+        .chip{
+            font-size:12px;
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--border);
+            color:var(--muted);
+            background:rgba(255,255,255,.04);
+            white-space:nowrap;
+        }
+        .select{
+            border:none; outline:none;
+            background:transparent;
+            color:var(--text);
+            min-width:140px;
+        }
+        .btn{
+            border:1px solid var(--border);
+            background:rgba(255,255,255,.06);
+            color:var(--text);
+            padding:10px 12px;
+            border-radius: 14px;
+            cursor:pointer;
+            transition: .15s transform, .15s background;
+        }
+        .btn:hover{ transform: translateY(-1px); background:rgba(255,255,255,.10); }
+        .btn.primary{
+            border:none;
+            background: linear-gradient(135deg, rgba(94,234,212,.95), rgba(96,165,250,.95));
+            color:#06131a;
+            font-weight:800;
+        }
+        .btn.danger{
+            border:none;
+            background: linear-gradient(135deg, rgba(251,113,133,.95), rgba(251,191,36,.90));
+            color:#1a0a10;
+            font-weight:800;
+        }
+
+        /* Layout */
+        .grid{
+            display:grid;
+            grid-template-columns: 280px 1fr;
+            gap:16px;
+            margin-top:16px;
+        }
+        @media (max-width: 980px){
+            .grid{ grid-template-columns: 1fr; }
+            .brand{ min-width:auto; }
+            .field input{ min-width:160px; }
+        }
+
+        /* Sidebar */
+        .sidebar{
+            border:1px solid var(--border);
+            background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow:hidden;
+        }
+        .side-head{
+            padding:14px 14px 10px;
+            display:flex; align-items:center; justify-content:space-between;
+            border-bottom:1px solid var(--border);
+        }
+        .side-head b{ font-size:14px; }
+        .side-head small{ color:var(--muted); }
+        .catlist{
+            padding:10px;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            max-height: 520px;
+            overflow:auto;
+        }
+        .cat{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            padding:10px 12px;
+            border-radius: 14px;
+            border:1px solid transparent;
+            background: rgba(0,0,0,.18);
+            cursor:pointer;
+            transition:.15s;
+        }
+        .cat:hover{ border-color: rgba(96,165,250,.35); background: rgba(96,165,250,.08); }
+        .cat.active{ border-color: rgba(94,234,212,.45); background: rgba(94,234,212,.10); }
+        .cat .name{
+            overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            font-size:13px;
+        }
+        .badge{
+            font-size:11px;
+            padding:5px 8px;
+            border-radius: 999px;
+            border:1px solid var(--border);
+            color: var(--muted);
+            background: rgba(255,255,255,.04);
+        }
+
+        /* Content area */
+        .content{
+            border:1px solid var(--border);
+            background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow:hidden;
+        }
+        .content-head{
+            padding:14px;
+            border-bottom:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .content-head .meta{
+            display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+        }
+        .content-head .meta .pill{
+            padding:7px 10px;
+            border-radius: 999px;
+            border:1px solid var(--border);
+            background: rgba(255,255,255,.04);
+            font-size:12px;
+            color: var(--muted);
+        }
+        .content-body{ padding:14px; }
+
+        .cards{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:12px;
+        }
+        @media (max-width: 1100px){ .cards{ grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 640px){ .cards{ grid-template-columns: 1fr; } }
+
+        .card{
+            border:1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+            border-radius: 18px;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            min-height: 360px;
+            transition: .15s transform, .15s border-color;
+            cursor:pointer;
+        }
+        .card:hover{
+            transform: translateY(-2px);
+            border-color: rgba(94,234,212,.35);
+        }
+        .thumb{
+            position:relative;
+            height:180px;
+            background: rgba(0,0,0,.22);
+            overflow:hidden;
+        }
+        .thumb img{
+            width:100%; height:100%;
+            object-fit:cover;
+            display:block;
+            transform: scale(1.02);
+        }
+        .thumb .discount{
+            position:absolute;
+            left:10px; top:10px;
+            background: rgba(251,113,133,.92);
+            color:#1b0a12;
+            font-weight:900;
+            font-size:12px;
+            padding:6px 10px;
+            border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(251,113,133,.22);
+        }
+        .thumb .rating{
+            position:absolute;
+            right:10px; top:10px;
+            background: rgba(251,191,36,.92);
+            color:#1a1405;
+            font-weight:900;
+            font-size:12px;
+            padding:6px 10px;
+            border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(251,191,36,.18);
+        }
+        .card .body{
+            padding:12px;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            flex:1;
+        }
+        .title{
+            font-weight:850;
+            font-size:14px;
+            line-height:1.25;
+            letter-spacing:.2px;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
+            min-height: 36px;
+        }
+        .desc{
+            color: rgba(168,179,214,.9);
+            font-size:12px;
+            line-height:1.45;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
+            min-height: 34px;
+        }
+        .row{
+            display:flex; align-items:center; justify-content:space-between; gap:10px;
+            margin-top:auto;
+            padding-top:8px;
+            border-top:1px dashed rgba(255,255,255,.10);
+        }
+        .price{
+            font-size:16px;
+            font-weight:900;
+        }
+        .price small{
+            font-size:12px;
+            color: var(--muted);
+            font-weight:700;
+            margin-left:6px;
+        }
+        .mini{
+            font-size:12px;
+            color: var(--muted);
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--border);
+            background: rgba(255,255,255,.04);
+            white-space:nowrap;
+        }
+
+        /* Footer pagination */
+        .pager{
+            padding:14px;
+            border-top:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .pager .left, .pager .right{
+            display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+        }
+        .small{
+            color:var(--muted);
+            font-size:12px;
+        }
+        .limit{
+            padding:9px 10px;
+            border:1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(0,0,0,.22);
+            color: var(--text);
+            outline:none;
+            cursor:pointer;
+        }
+
+        /* Skeleton */
+        .skeleton{
+            position:relative;
+            overflow:hidden;
+        }
+        .skeleton::after{
+            content:"";
+            position:absolute; inset:0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.2s infinite;
+        }
+        @keyframes shimmer{
+            100%{ transform: translateX(100%); }
+        }
+
+        /* Modal */
+        .modal{
+            position:fixed; inset:0;
+            background: rgba(0,0,0,.55);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding:18px;
+            z-index:50;
+        }
+        .modal.open{ display:flex; }
+        .modal-card{
+            width:min(980px, 100%);
+            border-radius: 22px;
+            border:1px solid var(--border);
+            background: linear-gradient(180deg, rgba(15,26,51,.95), rgba(10,16,32,.92));
+            box-shadow: var(--shadow);
+            overflow:hidden;
+            position:relative;
+        }
+        .modal-head{
+            padding:14px;
+            border-bottom:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+        .modal-head b{ font-size:14px; }
+        .close{
+            width:40px;height:40px;border-radius:14px;
+            border:1px solid var(--border);
+            background: rgba(255,255,255,.06);
+            color: var(--text);
+            cursor:pointer;
+        }
+        .modal-body{
+            display:grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap:0;
+        }
+        @media (max-width: 880px){
+            .modal-body{ grid-template-columns: 1fr; }
+        }
+        .modal-img{
+            background: rgba(0,0,0,.25);
+            min-height: 340px;
+        }
+        .modal-img img{
+            width:100%; height:100%;
+            object-fit:cover; display:block;
+        }
+        .modal-info{ padding:14px; }
+        .krow{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 12px; }
+        .krow .pill{
+            font-size:12px;
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--border);
+            background: rgba(255,255,255,.04);
+            color: var(--muted);
+        }
+        .modal-title{ font-size:18px; font-weight:950; margin:0 0 6px; }
+        .modal-desc{ margin:0 0 12px; color:rgba(168,179,214,.95); line-height:1.55; font-size:13px; }
+        .modal-price{
+            display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+            margin:10px 0 14px;
+        }
+        .modal-price .big{ font-size:22px; font-weight:950; }
+        .modal-price .stock{
+            font-size:12px;
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--border);
+            background: rgba(255,255,255,.04);
+            color: var(--muted);
+        }
+        .cta{
+            display:flex; gap:10px; flex-wrap:wrap;
+        }
+
+        .toast{
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            background: rgba(15,26,51,.92);
+            border:1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: var(--shadow);
+            display:none;
+            max-width: 360px;
+            z-index: 70;
+        }
+        .toast.show{ display:block; }
+        .toast b{ font-size:13px; }
+        .toast p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="topbar">
+        <div class="brand">
+            <div class="logo">DJ</div>
+            <div>
+                <h1>DummyJSON Products</h1>
+                <p>Search • Sort • Category • Pagination • Modal</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="field" title="Search products">
+                <span class="chip">🔎 Search</span>
+                <input id="q" type="text" placeholder="օր. phone, laptop, perfume...">
+            </div>
+
+            <div class="field" title="Sort">
+                <span class="chip">↕ Sort</span>
+                <select id="sortBy" class="select">
+                    <option value="">Default</option>
+                    <option value="title">Title</option>
+                    <option value="price">Price</option>
+                </select>
+                <select id="order" class="select" style="min-width:110px">
+                    <option value="asc">ASC</option>
+                    <option value="desc">DESC</option>
+                </select>
+            </div>
+
+            <button id="reset" class="btn">Reset</button>
+            <button id="refresh" class="btn primary">Refresh</button>
+        </div>
+    </div>
+
+    <div class="grid">
+        <aside class="sidebar">
+            <div class="side-head">
+                <div>
+                    <b>Categories</b><br>
+                    <small id="catCount">24 categories</small>
+                </div>
+                <span class="badge" id="activeCatBadge">All</span>
+            </div>
+
+            <div class="catlist" id="catList"><div class="cat active">
+                <div class="name">All products</div>
+                <span class="badge">all</span>
+            </div><div class="cat">
+                <div class="name">beauty</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">fragrances</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">furniture</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">groceries</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">home-decoration</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">kitchen-accessories</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">laptops</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">mens-shirts</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">mens-shoes</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">mens-watches</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">mobile-accessories</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">motorcycle</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">skin-care</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">smartphones</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">sports-accessories</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">sunglasses</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">tablets</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">tops</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">vehicle</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">womens-bags</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">womens-dresses</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">womens-jewellery</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">womens-shoes</div>
+                <span class="badge">cat</span>
+            </div><div class="cat">
+                <div class="name">womens-watches</div>
+                <span class="badge">cat</span>
+            </div></div>
+        </aside>
+
+        <main class="content">
+            <div class="content-head">
+                <div class="meta">
+                    <span class="pill" id="resultInfo">All products • Total: 194</span>
+                    <span class="pill" id="endpointInfo">endpoint: /products</span>
+                </div>
+                <div class="meta">
+                    <span class="pill" id="pageInfo">page: 1 / 7</span>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="cards" id="cards"><div class="card" data-id="1">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp" alt="Essence Mascara Lash Princess" loading="lazy">
+                        <div class="discount">-10%</div>
+                        <div class="rating">★ 2.6</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Essence Mascara Lash Princess</div>
+                        <div class="desc">The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.</div>
+                        <div class="row">
+                            <div class="price">$9.99 <small>USD</small></div>
+                            <div class="mini">beauty</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="2">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp" alt="Eyeshadow Palette with Mirror" loading="lazy">
+                        <div class="discount">-18%</div>
+                        <div class="rating">★ 2.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Eyeshadow Palette with Mirror</div>
+                        <div class="desc">The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application.</div>
+                        <div class="row">
+                            <div class="price">$19.99 <small>USD</small></div>
+                            <div class="mini">beauty</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="3">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/beauty/powder-canister/thumbnail.webp" alt="Powder Canister" loading="lazy">
+                        <div class="discount">-10%</div>
+                        <div class="rating">★ 4.6</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Powder Canister</div>
+                        <div class="desc">The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.</div>
+                        <div class="row">
+                            <div class="price">$14.99 <small>USD</small></div>
+                            <div class="mini">beauty</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="4">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/beauty/red-lipstick/thumbnail.webp" alt="Red Lipstick" loading="lazy">
+                        <div class="discount">-12%</div>
+                        <div class="rating">★ 4.4</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Red Lipstick</div>
+                        <div class="desc">The Red Lipstick is a classic and bold choice for adding a pop of color to your lips. With a creamy and pigmented formula, it provides a vibrant and long-lasting finish.</div>
+                        <div class="row">
+                            <div class="price">$12.99 <small>USD</small></div>
+                            <div class="mini">beauty</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="5">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/thumbnail.webp" alt="Red Nail Polish" loading="lazy">
+                        <div class="discount">-11%</div>
+                        <div class="rating">★ 4.3</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Red Nail Polish</div>
+                        <div class="desc">The Red Nail Polish offers a rich and glossy red hue for vibrant and polished nails. With a quick-drying formula, it provides a salon-quality finish at home.</div>
+                        <div class="row">
+                            <div class="price">$8.99 <small>USD</small></div>
+                            <div class="mini">beauty</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="6">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp" alt="Calvin Klein CK One" loading="lazy">
+                        <div class="discount">-2%</div>
+                        <div class="rating">★ 4.4</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Calvin Klein CK One</div>
+                        <div class="desc">CK One by Calvin Klein is a classic unisex fragrance, known for its fresh and clean scent. It's a versatile fragrance suitable for everyday wear.</div>
+                        <div class="row">
+                            <div class="price">$49.99 <small>USD</small></div>
+                            <div class="mini">fragrances</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="7">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/thumbnail.webp" alt="Chanel Coco Noir Eau De" loading="lazy">
+                        <div class="discount">-17%</div>
+                        <div class="rating">★ 4.3</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Chanel Coco Noir Eau De</div>
+                        <div class="desc">Coco Noir by Chanel is an elegant and mysterious fragrance, featuring notes of grapefruit, rose, and sandalwood. Perfect for evening occasions.</div>
+                        <div class="row">
+                            <div class="price">$129.99 <small>USD</small></div>
+                            <div class="mini">fragrances</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="8">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/thumbnail.webp" alt="Dior J'adore" loading="lazy">
+                        <div class="discount">-15%</div>
+                        <div class="rating">★ 3.8</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Dior J'adore</div>
+                        <div class="desc">J'adore by Dior is a luxurious and floral fragrance, known for its blend of ylang-ylang, rose, and jasmine. It embodies femininity and sophistication.</div>
+                        <div class="row">
+                            <div class="price">$89.99 <small>USD</small></div>
+                            <div class="mini">fragrances</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="9">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/fragrances/dolce-shine-eau-de/thumbnail.webp" alt="Dolce Shine Eau de" loading="lazy">
+                        <div class="discount">-1%</div>
+                        <div class="rating">★ 4.0</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Dolce Shine Eau de</div>
+                        <div class="desc">Dolce Shine by Dolce &amp; Gabbana is a vibrant and fruity fragrance, featuring notes of mango, jasmine, and blonde woods. It's a joyful and youthful scent.</div>
+                        <div class="row">
+                            <div class="price">$69.99 <small>USD</small></div>
+                            <div class="mini">fragrances</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="10">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/fragrances/gucci-bloom-eau-de/thumbnail.webp" alt="Gucci Bloom Eau de" loading="lazy">
+                        <div class="discount">-14%</div>
+                        <div class="rating">★ 2.7</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Gucci Bloom Eau de</div>
+                        <div class="desc">Gucci Bloom by Gucci is a floral and captivating fragrance, with notes of tuberose, jasmine, and Rangoon creeper. It's a modern and romantic scent.</div>
+                        <div class="row">
+                            <div class="price">$79.99 <small>USD</small></div>
+                            <div class="mini">fragrances</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="11">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-bed/thumbnail.webp" alt="Annibale Colombo Bed" loading="lazy">
+                        <div class="discount">-9%</div>
+                        <div class="rating">★ 4.8</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Annibale Colombo Bed</div>
+                        <div class="desc">The Annibale Colombo Bed is a luxurious and elegant bed frame, crafted with high-quality materials for a comfortable and stylish bedroom.</div>
+                        <div class="row">
+                            <div class="price">$1,899.99 <small>USD</small></div>
+                            <div class="mini">furniture</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="12">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-sofa/thumbnail.webp" alt="Annibale Colombo Sofa" loading="lazy">
+                        <div class="discount">-14%</div>
+                        <div class="rating">★ 3.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Annibale Colombo Sofa</div>
+                        <div class="desc">The Annibale Colombo Sofa is a sophisticated and comfortable seating option, featuring exquisite design and premium upholstery for your living room.</div>
+                        <div class="row">
+                            <div class="price">$2,499.99 <small>USD</small></div>
+                            <div class="mini">furniture</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="13">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/thumbnail.webp" alt="Bedside Table African Cherry" loading="lazy">
+                        <div class="discount">-19%</div>
+                        <div class="rating">★ 2.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Bedside Table African Cherry</div>
+                        <div class="desc">The Bedside Table in African Cherry is a stylish and functional addition to your bedroom, providing convenient storage space and a touch of elegance.</div>
+                        <div class="row">
+                            <div class="price">$299.99 <small>USD</small></div>
+                            <div class="mini">furniture</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="14">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/furniture/knoll-saarinen-executive-conference-chair/thumbnail.webp" alt="Knoll Saarinen Executive Conference Chair" loading="lazy">
+                        <div class="discount">-2%</div>
+                        <div class="rating">★ 4.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Knoll Saarinen Executive Conference Chair</div>
+                        <div class="desc">The Knoll Saarinen Executive Conference Chair is a modern and ergonomic chair, perfect for your office or conference room with its timeless design.</div>
+                        <div class="row">
+                            <div class="price">$499.99 <small>USD</small></div>
+                            <div class="mini">furniture</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="15">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/furniture/wooden-bathroom-sink-with-mirror/thumbnail.webp" alt="Wooden Bathroom Sink With Mirror" loading="lazy">
+                        <div class="discount">-9%</div>
+                        <div class="rating">★ 3.6</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Wooden Bathroom Sink With Mirror</div>
+                        <div class="desc">The Wooden Bathroom Sink with Mirror is a unique and stylish addition to your bathroom, featuring a wooden sink countertop and a matching mirror.</div>
+                        <div class="row">
+                            <div class="price">$799.99 <small>USD</small></div>
+                            <div class="mini">furniture</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="16">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/apple/thumbnail.webp" alt="Apple" loading="lazy">
+                        <div class="discount">-13%</div>
+                        <div class="rating">★ 4.2</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Apple</div>
+                        <div class="desc">Fresh and crisp apples, perfect for snacking or incorporating into various recipes.</div>
+                        <div class="row">
+                            <div class="price">$1.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="17">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/beef-steak/thumbnail.webp" alt="Beef Steak" loading="lazy">
+                        <div class="discount">-10%</div>
+                        <div class="rating">★ 4.5</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Beef Steak</div>
+                        <div class="desc">High-quality beef steak, great for grilling or cooking to your preferred level of doneness.</div>
+                        <div class="row">
+                            <div class="price">$12.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="18">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/cat-food/thumbnail.webp" alt="Cat Food" loading="lazy">
+                        <div class="discount">-10%</div>
+                        <div class="rating">★ 3.1</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Cat Food</div>
+                        <div class="desc">Nutritious cat food formulated to meet the dietary needs of your feline friend.</div>
+                        <div class="row">
+                            <div class="price">$8.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="19">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/chicken-meat/thumbnail.webp" alt="Chicken Meat" loading="lazy">
+                        <div class="discount">-14%</div>
+                        <div class="rating">★ 3.2</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Chicken Meat</div>
+                        <div class="desc">Fresh and tender chicken meat, suitable for various culinary preparations.</div>
+                        <div class="row">
+                            <div class="price">$9.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="20">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/cooking-oil/thumbnail.webp" alt="Cooking Oil" loading="lazy">
+                        <div class="discount">-9%</div>
+                        <div class="rating">★ 4.8</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Cooking Oil</div>
+                        <div class="desc">Versatile cooking oil suitable for frying, sautéing, and various culinary applications.</div>
+                        <div class="row">
+                            <div class="price">$4.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="21">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/cucumber/thumbnail.webp" alt="Cucumber" loading="lazy">
+                        <div class="discount">-0%</div>
+                        <div class="rating">★ 4.1</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Cucumber</div>
+                        <div class="desc">Crisp and hydrating cucumbers, ideal for salads, snacks, or as a refreshing side.</div>
+                        <div class="row">
+                            <div class="price">$1.49 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="22">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/dog-food/thumbnail.webp" alt="Dog Food" loading="lazy">
+                        <div class="discount">-10%</div>
+                        <div class="rating">★ 4.5</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Dog Food</div>
+                        <div class="desc">Specially formulated dog food designed to provide essential nutrients for your canine companion.</div>
+                        <div class="row">
+                            <div class="price">$10.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="23">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/eggs/thumbnail.webp" alt="Eggs" loading="lazy">
+                        <div class="discount">-11%</div>
+                        <div class="rating">★ 2.5</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Eggs</div>
+                        <div class="desc">Fresh eggs, a versatile ingredient for baking, cooking, or breakfast.</div>
+                        <div class="row">
+                            <div class="price">$2.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="24">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/fish-steak/thumbnail.webp" alt="Fish Steak" loading="lazy">
+                        <div class="discount">-4%</div>
+                        <div class="rating">★ 3.8</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Fish Steak</div>
+                        <div class="desc">Quality fish steak, suitable for grilling, baking, or pan-searing.</div>
+                        <div class="row">
+                            <div class="price">$14.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="25">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/green-bell-pepper/thumbnail.webp" alt="Green Bell Pepper" loading="lazy">
+                        <div class="discount">-0%</div>
+                        <div class="rating">★ 3.3</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Green Bell Pepper</div>
+                        <div class="desc">Fresh and vibrant green bell pepper, perfect for adding color and flavor to your dishes.</div>
+                        <div class="row">
+                            <div class="price">$1.29 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="26">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/green-chili-pepper/thumbnail.webp" alt="Green Chili Pepper" loading="lazy">
+                        <div class="discount">-1%</div>
+                        <div class="rating">★ 3.7</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Green Chili Pepper</div>
+                        <div class="desc">Spicy green chili pepper, ideal for adding heat to your favorite recipes.</div>
+                        <div class="row">
+                            <div class="price">$0.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="27">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/honey-jar/thumbnail.webp" alt="Honey Jar" loading="lazy">
+                        <div class="discount">-14%</div>
+                        <div class="rating">★ 4.0</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Honey Jar</div>
+                        <div class="desc">Pure and natural honey in a convenient jar, perfect for sweetening beverages or drizzling over food.</div>
+                        <div class="row">
+                            <div class="price">$6.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="28">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/ice-cream/thumbnail.webp" alt="Ice Cream" loading="lazy">
+                        <div class="discount">-9%</div>
+                        <div class="rating">★ 3.4</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Ice Cream</div>
+                        <div class="desc">Creamy and delicious ice cream, available in various flavors for a delightful treat.</div>
+                        <div class="row">
+                            <div class="price">$5.49 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="29">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/juice/thumbnail.webp" alt="Juice" loading="lazy">
+                        <div class="discount">-12%</div>
+                        <div class="rating">★ 3.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Juice</div>
+                        <div class="desc">Refreshing fruit juice, packed with vitamins and great for staying hydrated.</div>
+                        <div class="row">
+                            <div class="price">$3.99 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div><div class="card" data-id="30">
+                    <div class="thumb">
+                        <img src="https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp" alt="Kiwi" loading="lazy">
+                        <div class="discount">-15%</div>
+                        <div class="rating">★ 4.9</div>
+                    </div>
+                    <div class="body">
+                        <div class="title">Kiwi</div>
+                        <div class="desc">Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes.</div>
+                        <div class="row">
+                            <div class="price">$2.49 <small>USD</small></div>
+                            <div class="mini">groceries</div>
+                        </div>
+                    </div>
+                </div></div>
+            </div>
+
+            <div class="pager">
+                <div class="left">
+                    <button id="prev" class="btn" disabled="" style="opacity: 0.55;">← Prev</button>
+                    <button id="next" class="btn" style="opacity: 1;">Next →</button>
+                    <span class="small" id="rangeInfo">Showing 1-30 of 194</span>
+                </div>
+
+                <div class="right">
+                    <span class="small">Limit</span>
+                    <select id="limit" class="limit">
+                        <option value="12">12</option>
+                        <option value="18">18</option>
+                        <option value="24">24</option>
+                        <option value="30" selected="">30</option>
+                    </select>
+                    <span class="small">Skip</span>
+                    <span class="badge" id="skipBadge">0</span>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal" id="modal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <b id="modalHead">Product</b>
+            <button class="close" id="closeModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-img" id="modalImg"></div>
+            <div class="modal-info">
+                <h2 class="modal-title" id="mTitle">—</h2>
+                <div class="krow" id="mPills"></div>
+                <p class="modal-desc" id="mDesc">—</p>
+                <div class="modal-price">
+                    <div class="big" id="mPrice">$0</div>
+                    <div class="stock" id="mStock">stock: —</div>
+                </div>
+                <div class="cta">
+                    <button class="btn primary" id="fakeAdd">Add to cart</button>
+                    <button class="btn danger" id="fakeBuy">Buy now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <b id="toastTitle">—</b>
+    <p id="toastText">—</p>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
